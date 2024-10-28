@@ -1,11 +1,11 @@
 # PHP Activities 1-2-3
 
 ## Table of Contents
-- Vending Machine
+- Vendo Machine
 - Peys App
 - Login System
 
-## Vending Machine
+## Vendo Machine
 A basic vending machine using PHP.
 
 ## Peys App
