@@ -62,46 +62,59 @@
     </form>
 
     <?php if(isset($_REQUEST['btnCheckout'])) : ?>
-
-        <hr>
-        <h1>Purchase Summary: </h1>
-        <ul> 
-            <?php
-            $quantity = $_REQUEST['quantity'];
-            $totalcost = 0;
-            $totalquantity = 0;
-
-            switch ($_REQUEST['size']) {
-                case 0:
-                    $size = 'Regular';
-                    $sizeCost = 0;
-                    break;
-                case 1:
-                    $size = 'Up-size';
-                    $sizeCost = 5;
-                    break;
-                case 2:
-                    $size = 'Jumbo';
-                    $sizeCost = 10;
-                    break;    
-            }
-            
-            foreach($arrDrinks as $key => $value){
-                if(isset($_REQUEST['ckbDrink_' . $key])) {
-                    $cost = (($arrDrinksPrice[$key] + $sizeCost) * ($quantity));
-                    echo '<li>'. $quantity . ' piece' . ($quantity > 1 ? 's ' : ' ') . 'of ' . $size . ' ' . $value . ' amounting to ₱ ' . $cost . '</li>';
-                    $totalcost += $cost;
-                    $totalquantity += $quantity;
-                }
-            }
-            ?>
-        </ul>
-
         <?php
-            echo '<b>Total Number of Items: </b> ' . $totalquantity . '<br>';
-            echo '<b>Total Amount: </b>' . $totalcost;
+        $allUnchecked = true;
+
+        foreach($arrDrinks as $key => $value){
+            if(isset($_REQUEST['ckbDrink_' . $key])) {
+                $allUnchecked = false; 
+            }
+        }
         ?>
 
+        <?php if($allUnchecked == false) : ?>
+            <hr>
+            <h1>Purchase Summary: </h1>
+            <ul> 
+                <?php
+                $quantity = $_REQUEST['quantity'];
+                $totalcost = 0;
+                $totalquantity = 0;
+
+                switch ($_REQUEST['size']) {
+                    case 0:
+                        $size = 'Regular';
+                        $sizeCost = 0;
+                        break;
+                    case 1:
+                        $size = 'Up-size';
+                        $sizeCost = 5;
+                        break;
+                    case 2:
+                        $size = 'Jumbo';
+                        $sizeCost = 10;
+                        break;    
+                }
+                
+                foreach($arrDrinks as $key => $value){
+                    if(isset($_REQUEST['ckbDrink_' . $key])) {
+                        $cost = (($arrDrinksPrice[$key] + $sizeCost) * ($quantity));
+                        echo '<li>'. $quantity . ' piece' . ($quantity > 1 ? 's ' : ' ') . 'of ' . $size . ' ' . $value . ' amounting to ₱ ' . $cost . '</li>';
+                        $totalcost += $cost;
+                        $totalquantity += $quantity;
+                    }
+                }
+                ?>
+            </ul>
+
+            <?php
+                echo '<b>Total Number of Items: </b> ' . $totalquantity . '<br>';
+                echo '<b>Total Amount: </b>' . $totalcost;
+            ?>
+        <?php else: ?>
+            <hr>
+            No Selected Product. Try Again.
+        <?php endif; ?>
     <?php endif; ?>
 </body>
 </html>
