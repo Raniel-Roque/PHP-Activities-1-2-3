@@ -40,7 +40,7 @@
             ?>
                     <div class="alert alert-success alert-dismissible fade show" style="max-width: 350px; margin: auto;">
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        Welcome to the system! <?php echo $userUsername?>.
+                        Welcome to the system: <?php echo $userUsername?>.
                     </div>
                 
                 <?php else: ?>
