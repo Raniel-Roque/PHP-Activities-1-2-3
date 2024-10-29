@@ -11,5 +11,8 @@ A basic vending machine using PHP.
 ## Peys App
 A simple face/picture manipulation.
 
-## Login System
+## Static Login System
 A basic user authentication system.
+
+p.s. 
+I dont know why downloaded bootstrap wouldnt work on my alert. Thats why I used the link version.
