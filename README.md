@@ -4,6 +4,7 @@
 - Vendo Machine
 - Peys App
 - Login System
+- Registration System
 
 ## Vendo Machine
 A basic vending machine using PHP.
@@ -14,7 +15,7 @@ A simple face/picture manipulation.
 ## Static Login System
 A basic static user authentication system.
 
-## Create Account
+## Registration System
 A basic user registration
 
 p.s. 
