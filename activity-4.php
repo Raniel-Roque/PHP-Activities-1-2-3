@@ -11,9 +11,6 @@
         $emailAddress = htmlspecialchars(stripslashes(trim($_POST['txtEmail'])));
         $jobType = $_POST['drpJobType'];
 
-        // Error array
-        $arrError = [];
-
         // Check if fields are empty
         if (empty($fullName))
             $arrError['fullName'] = 'Full Name is Required.';
@@ -30,6 +27,9 @@
 
         if (empty($jobType))
             $arrError['jobType'] = 'Job Type is Required.';
+    
+        if (!isset($arrError))
+            header("location:activity-4_page2.php");
     }
 
 ?>
@@ -106,7 +106,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text"> <i class="fa fa-building"></i> </span>
                                 </div>
-                                <select name="drpJobType" class="form-control">
+                                <select name="drpJobType" class="form-select">
                                     <option value="" <?php echo $jobType == '' ? 'selected' : ''; ?>>Select job type</option>
                                     <option value="Developer" <?php echo $jobType == 'Developer' ? 'selected' : ''; ?>>Developer</option>
                                     <option value="Designer" <?php echo $jobType == 'Designer' ? 'selected' : ''; ?>>Designer</option>
