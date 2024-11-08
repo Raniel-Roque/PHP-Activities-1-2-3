@@ -12,7 +12,10 @@ A basic vending machine using PHP.
 A simple face/picture manipulation.
 
 ## Static Login System
-A basic user authentication system.
+A basic static user authentication system.
+
+## Create Account
+A basic user registration
 
 p.s. 
 I dont know why downloaded bootstrap wouldnt work on my alert. Thats why I used the link version.
