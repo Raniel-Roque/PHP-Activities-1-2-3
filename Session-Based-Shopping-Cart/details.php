@@ -40,7 +40,7 @@
             <div class="col-8">
                 <h2>Product Title</h2>
                 <h4>P 550</h4>
-                <p>Product description goes here. Add more details about the product, material, or any specifics the customer might want to know.</p>
+                <p style="font-size: 14px">Product description goes here. Add more details about the product, material, or any specifics the customer might want to know.</p>
                 <hr>
                 <!-- Radio Buttons for Size Selection -->
                 <form>
@@ -74,7 +74,7 @@
                     <br>
                     <div class="d-flex g-4">
                         <!-- Confirm Product Purchase Button -->
-                        <button type="button" class="btn btn-dark text-white" style="margin-right: 20px;"> <!-- Increased margin on the end of the button -->
+                        <button type="button" class="btn btn-dark text-white" style="margin-right: 10px;"> <!-- Increased margin on the end of the button -->
                             <i class="fa fa-check"></i> Confirm Product Purchase
                         </button>
 
