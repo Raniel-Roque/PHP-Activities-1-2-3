@@ -1,3 +1,21 @@
+<?php
+    session_start();
+    require 'stickerInfo.php'; // Include the array from stickerInfo.php
+
+    if (isset($_POST['btnCart'])) {
+        if (isset($_POST['sticker_key'])) {
+            $sticker_key = $_POST['sticker_key']; // Get the sticker key from the POST data
+            
+            // Make sure the key exists in the array before accessing it
+            if (isset($arrStickers[$sticker_key])) {
+                $_SESSION['sticker'] = $arrStickers[$sticker_key]; // Store the selected sticker in the session
+                header('Location: details.php');
+                exit(); // Always exit after a redirect to stop further script execution
+            }
+        }
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,165 +36,34 @@
                 <i class="fa fa-store mx-2" aria-hidden="true"></i> Hoyo Sticker Online Store
             </h3>
             <button type="button" class="btn btn-primary">
-                <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp&nbsp<span class="badge badge-light">4</span>
+                <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
             </button>
         </div>
         <hr>
         <div class="row g-3">
-            <!-- First Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/hutao_1.jpg">
-                                <img class="pic-2" src="img/hutao_2.jpg">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Hutao Sticker</a></h3>
-                            <span class="price">₱250.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Second Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/furina_1.jpg">
-                                <img class="pic-2" src="img/furina_2.jpg">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Furina Sticker</a></h3>
-                            <span class="price">₱250.00</span>
+            <?php foreach ($arrStickers as $key => $sticker): ?>
+                <div class="col-3" style="margin-bottom: 30px">
+                    <div class="card">
+                        <div class="product-grid2">
+                            <div class="product-image2">
+                                <a href="#">
+                                    <img class="pic-1" src="img/<?php echo $sticker['photo1']; ?>">
+                                    <img class="pic-2" src="img/<?php echo $sticker['photo2']; ?>">
+                                </a>
+                                <!-- Wrap Add to Cart in a form to submit the sticker key -->
+                                <form method="POST">
+                                    <input type="hidden" name="sticker_key" value="<?php echo $key; ?>">
+                                    <button type="submit" name="btnCart" class="add-to-cart">Add to cart</button>
+                                </form>
+                            </div>
+                            <div class="card-body product-content">
+                                <h3 class="title" style="font-weight: bold;"><a href="#"><?php echo $sticker['name']; ?></a></h3>
+                                <span class="price">₱<?php echo number_format($sticker['price'], 2); ?></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Third Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/sparkle_1.png">
-                                <img class="pic-2" src="img/sparkle_2.png">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Sparkle Sticker</a></h3>
-                            <span class="price">₱300.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Fourth Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/nahida_1.jpg">
-                                <img class="pic-2" src="img/nahida_2.jpg">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Nahida Sticker</a></h3>
-                            <span class="price">₱200.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <br>
-        <div class="row g-3">
-            <!-- Fifth Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/kazuha_1.png">
-                                <img class="pic-2" src="img/kazuha_2.jpg">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Kazuha Sticker</a></h3>
-                            <span class="price">₱1000.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sixth Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/venti_1.jpg">
-                                <img class="pic-2" src="img/venti_2.png">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Venti Sticker</a></h3>
-                            <span class="price">₱100.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Seventh Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/wanderer_1.png">
-                                <img class="pic-2" src="img/wanderer_2.png">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Wanderer Sticker</a></h3>
-                            <span class="price">₱500.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Eigth Product Card -->
-            <div class="col-md-3 col-sm-6">
-                <div class="card">
-                    <div class="product-grid2">
-                        <div class="product-image2">
-                            <a href="#">
-                                <img class="pic-1" src="img/xiao_1.jpg">
-                                <img class="pic-2" src="img/xiao_2.jpg">
-                            </a>
-                            <a class="add-to-cart" href="#">Add to cart</a>
-                        </div>
-                        <div class="card-body product-content">
-                            <h3 class="title"><a href="#">Xiao Sticker</a></h3>
-                            <span class="price">₱650.00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <hr>
