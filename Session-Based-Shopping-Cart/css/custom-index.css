@@ -162,3 +162,59 @@ h3.h3 {
 .card-body {
     text-align: center;
 }
+
+/* New product image container */
+.product-image3 {
+    position: relative;
+    overflow: hidden;
+}
+
+.product-image3 img {
+    width: 100%;
+    height: 400px; /* Set height for uniformity across images */
+    object-fit: cover; /* Ensures images fit the area without distortion */
+    transition: transform 0.3s ease; /* Transition for zoom effect */
+}
+
+.product-image3 .pic-1 {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.product-image3 .pic-2 {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.3s ease;
+}
+
+/* Hover Effect */
+.product-image3:hover .pic-1 {
+    opacity: 0; /* Hide the first image */
+}
+
+.product-image3:hover .pic-2 {
+    opacity: 1; /* Show the second image */
+}
+
+/* Optional: Slight zoom effect */
+.product-image3:hover img {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+.price-tag {
+    display: inline-flex;            /* Ensures the element aligns well with text */
+    justify-content: center;         /* Centers the text horizontally */
+    align-items: center;             /* Centers the text vertically */
+    background-color: black;
+    color: white;
+    border-radius: 50%;
+    width: 50px;                     /* Fixed width to create a circle */
+    height: 50px;                    /* Fixed height to create a circle */
+    font-size: 18px;
+    font-weight: bold;
+    margin-left: 10px;
+}
