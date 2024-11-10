@@ -1,3 +1,18 @@
+<?php
+    session_start();
+    require 'stickerInfo.php'; // Include the sticker array
+
+    // Check if the sticker data is available in the session
+    if (!isset($_SESSION['sticker'])) {
+        // Redirect to the homepage or another page if no sticker is selected
+        header('Location: index.php');
+        exit(); // Always exit after a redirect to stop further execution
+    }
+
+    // Get the sticker data from the session
+    $sticker = $_SESSION['sticker'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,24 +45,27 @@
             <div class="col-4">
                 <div class="product-image3">
                     <a href="#">
-                        <img class="pic-1" src="img/hutao_1.jpg" alt="Product Image 1">
-                        <img class="pic-2" src="img/hutao_2.jpg" alt="Product Image 2">
+                        <!-- Use the sticker data for the images -->
+                        <img class="pic-1" src="img/<?php echo htmlspecialchars($sticker['photo1']); ?>" alt="Product Image 1">
+                        <img class="pic-2" src="img/<?php echo htmlspecialchars($sticker['photo2']); ?>" alt="Product Image 2">
                     </a>
                 </div>
             </div>
 
             <!-- Column for Title, Description, and Size Options -->
             <div class="col-8">
-                <h2>Product Title</h2>
-                <h4>P 550</h4>
-                <p style="font-size: 14px">Product description goes here. Add more details about the product, material, or any specifics the customer might want to know.</p>
+                <!-- Use the sticker data for the title and price -->
+                <h2><?php echo htmlspecialchars($sticker['name']); ?></h2>
+                <h4>P <?php echo number_format($sticker['price'], 2); ?></h4>
+                <!-- Use the sticker description -->
+                <p style="font-size: 14px"><?php echo htmlspecialchars($sticker['description']); ?></p>
                 <hr>
                 <!-- Radio Buttons for Size Selection -->
                 <form>
                     <h4><label class="form-label">Select Size:</label></h4>
                     <div class="mb-3">
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="sizeOptions" id="sizeSmall" value="Small">
+                            <input class="form-check-input" type="radio" name="sizeOptions" id="sizeSmall" value="Small" checked>
                             <label class="form-check-label" for="sizeSmall">Small</label>
                         </div>
                         <div class="form-check form-check-inline">
