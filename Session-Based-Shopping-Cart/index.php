@@ -53,12 +53,18 @@
                                 <!-- Wrap Add to Cart in a form to submit the sticker key -->
                                 <form method="POST">
                                     <input type="hidden" name="sticker_key" value="<?php echo $key; ?>">
-                                    <button type="submit" name="btnCart" class="add-to-cart">Add to cart</button>
+                                    <button type="submit" name="btnCart" class="add-to-cart">
+                                        <i class="fa fa-shopping-cart"></i> &nbspAdd to cart
+                                    </button>
                                 </form>
                             </div>
                             <div class="card-body product-content">
-                                <h3 class="title" style="font-weight: bold;"><a href="#"><?php echo $sticker['name']; ?></a></h3>
-                                <span class="price">₱<?php echo number_format($sticker['price'], 2); ?></span>
+                                <h3 class="title">
+                                    <a href="#"><?php echo $sticker['name']; ?></a>
+                                    <span class="badge badge-dark" style="padding: 10px; color: white;">
+                                        ₱<?php echo number_format($sticker['price'], 2); ?>
+                                    </span>
+                                </h3>
                             </div>
                         </div>
                     </div>

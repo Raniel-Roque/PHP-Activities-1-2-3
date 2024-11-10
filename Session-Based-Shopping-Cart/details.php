@@ -4,9 +4,18 @@
 
     // Check if the sticker data is available in the session
     if (!isset($_SESSION['sticker'])) {
-        // Redirect to the homepage or another page if no sticker is selected
         header('Location: index.php');
         exit(); // Always exit after a redirect to stop further execution
+    }
+
+    if (isset($_POST['btnBack'])) {
+        header('Location: index.php');
+        exit;
+    }
+    
+    if (isset($_POST['btnConfirm'])) {
+        header('Location: index.php');
+        exit;
     }
 
     // Get the sticker data from the session
@@ -61,7 +70,7 @@
                 <p style="font-size: 14px"><?php echo htmlspecialchars($sticker['description']); ?></p>
                 <hr>
                 <!-- Radio Buttons for Size Selection -->
-                <form>
+                <form method="post">
                     <h4><label class="form-label">Select Size:</label></h4>
                     <div class="mb-3">
                         <div class="form-check form-check-inline">
@@ -88,16 +97,16 @@
 
                     <hr>
                     <h4><label class="form-label">Enter Quantity:</label></h4>
-                    <input class="form-control w-100" type="number" min="1" max="100" value="0">
+                    <input class="form-control w-100" type="number" min="1" max="100" value="1">
                     <br>
                     <div class="d-flex g-4">
                         <!-- Confirm Product Purchase Button -->
-                        <button type="button" class="btn btn-dark text-white" style="margin-right: 10px;"> <!-- Increased margin on the end of the button -->
+                        <button type="submit" class="btn btn-dark text-white" name="btnConfirm" style="margin-right: 10px;"> <!-- Increased margin on the end of the button -->
                             <i class="fa fa-check"></i> Confirm Product Purchase
                         </button>
 
                         <!-- Cancel/Go Back Button -->
-                        <button type="button" class="btn btn-danger">
+                        <button type="submit" class="btn btn-danger" name="btnBack">
                             Cancel / Go Back
                         </button>
                     </div>
