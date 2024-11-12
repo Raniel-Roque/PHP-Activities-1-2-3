@@ -1,30 +1,51 @@
 <?php
-    session_start();
-    require 'stickerInfo.php'; // Include the sticker array
+session_start();
+require 'stickerInfo.php'; // Include the sticker array
 
-    // Check if the sticker data is available in the session
-    if (!isset($_SESSION['sticker'])) {
-        header('Location: index.php');
-        exit(); // Always exit after a redirect to stop further execution
+// Check if the cart is empty
+if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+    header('Location: index.php');
+    exit(); // Always exit after a redirect to stop further execution
+}
+
+if (isset($_POST['btnContinue'])) {
+    header('Location: index.php');
+    exit;
+}
+
+if (isset($_POST['btnCheckout'])) {
+    header('Location: clear.php');
+    exit;
+}
+
+if (isset($_POST['btnDelete'])) {
+    header('Location: remove-confirm.php');
+    exit;
+}
+
+// Retrieve the cart from the session
+$cart = $_SESSION['cart'];
+
+// Step 1: Merge identical items in the cart
+$mergedCart = [];
+foreach ($cart as $item) {
+    $found = false;
+    // Look for an existing item with the same name and size
+    foreach ($mergedCart as &$mergedItem) {
+        if ($mergedItem['name'] === $item['name'] && $mergedItem['size'] === $item['size']) {
+            // Merge quantities
+            $mergedItem['quantity'] += $item['quantity'];
+            $mergedItem['total'] = $mergedItem['quantity'] * $mergedItem['price']; // Recalculate total
+            $found = true;
+            break;
+        }
     }
 
-    if (isset($_POST['btnContinue'])) {
-        header('Location: index.php');
-        exit;
+    // If the item wasn't found, add it to the merged cart
+    if (!$found) {
+        $mergedCart[] = $item;
     }
-
-    if (isset($_POST['btnCheckout'])) {
-        header('Location: clear.php');
-        exit;
-    }
-
-    if (isset($_POST['btnDelete'])) {
-        header('Location: remove-confirm.php');
-        exit;
-    }
-
-    // Get the sticker data from the session
-    $sticker = $_SESSION['sticker'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -51,7 +72,16 @@
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
                     <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
-                    <span class="badge badge-light">4</span>
+                    <span class="badge badge-light">
+                        <?php
+                        // Calculate total quantity in the cart
+                        $totalQuantity = 0;
+                        foreach ($mergedCart as $item) {
+                            $totalQuantity += $item['quantity']; // Sum up the quantity of each item
+                        }
+                        echo $totalQuantity;
+                        ?>
+                    </span>
                 </button>
             </form>
         </div>
@@ -64,7 +94,8 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th scope="col-3">Product Name</th>
+                                    <th scope="col-1"></th>
+                                    <th scope="col-2">Product Name</th>
                                     <th scope="col-2">Size</th>
                                     <th scope="col-2" class="text-center">Quantity</th>
                                     <th scope="col-2" class="text-center">Price</th>
@@ -73,60 +104,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>Product Name Dada</td>
-                                    <td>Large</td>
-                                    <td class="text-center">
-                                        <input class="form-control" type="number" value="1" min="1" max="100" />
-                                    </td>
-                                    <td class="text-center">₱ 24.90</td>
-                                    <td class="text-center">₱ 24.90</td>
-                                    <td>
-                                        <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDelete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Product Name Toto</td>
-                                    <td>Medium</td>
-                                    <td class="text-center">
-                                        <input class="form-control" type="number" value="1" min="1" max="100" />
-                                    </td>
-                                    <td class="text-center">₱ 33.90</td>
-                                    <td class="text-center">₱ 33.90</td>
-                                    <td>
-                                        <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDelete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Product Name Titi</td>
-                                    <td>Small</td>
-                                    <td class="text-center">
-                                        <input class="form-control" type="number" value="1" min="1" max="100" />
-                                    </td>
-                                    <td class="text-center">₱ 70.00</td>
-                                    <td class="text-center">₱ 70.00</td>
-                                    <td>
-                                        <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDelete">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                <?php
+                                $totalAmount = 0;
+                                foreach ($mergedCart as $item) {
+                                    // Assuming photo1 is available in the item data
+                                    $imagePath = 'img/' . $item['photo']; // Path to the photo stored in the cart item
+
+                                    echo "<tr>";
+                                    echo "<td><img src='" . htmlspecialchars($imagePath) . "' alt='" . htmlspecialchars($item['name']) . "' style='width: 50px; height: 50px;' /></td>"; // Display product image
+                                    echo "<td>" . htmlspecialchars($item['name']) . "</td>";
+                                    echo "<td>" . htmlspecialchars($item['size']) . "</td>";
+                                    echo "<td class='text-center'>
+                                            <input class='form-control' type='number' value='" . $item['quantity'] . "' min='1' max='100' />
+                                          </td>";
+                                    echo "<td class='text-center'>₱ " . number_format($item['price'], 2) . "</td>";
+                                    echo "<td class='text-center'>₱ " . number_format($item['total'], 2) . "</td>";
+                                    echo "<td>
+                                            <form method='post'>
+                                                <button type='submit' class='btn btn-danger' name='btnDelete'>
+                                                    <i class='fa fa-trash'></i>
+                                                </button>
+                                            </form>
+                                          </td>";
+                                    echo "</tr>";
+
+                                    $totalAmount += $item['total']; // Add to the total amount
+                                }
+                                ?>
+
+                                <!-- Display Total -->
                                 <tr>
                                     <td></td>
+                                    <td></td>
                                     <td><strong>Total</strong></td>
-                                    <td class="text-center">4</td>
+                                    <td class="text-left"><?php echo array_sum(array_column($mergedCart, 'quantity')); ?></td>
                                     <td class="text-center">----</td>
-                                    <td class="text-center"><strong>₱ 128.80</strong></td>
+                                    <td class="text-center"><strong>₱ <?php echo number_format($totalAmount, 2); ?></strong></td>
                                     <td>----</td>
                                 </tr>
                             </tbody>
