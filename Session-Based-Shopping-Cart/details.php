@@ -14,7 +14,7 @@
     }
     
     if (isset($_POST['btnConfirm'])) {
-        header('Location: index.php');
+        header('Location: confirm.php');
         exit;
     }
 
