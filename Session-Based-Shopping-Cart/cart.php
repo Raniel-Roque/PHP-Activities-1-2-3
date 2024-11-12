@@ -1,3 +1,27 @@
+<?php
+    session_start();
+    require 'stickerInfo.php'; // Include the sticker array
+
+    // Check if the sticker data is available in the session
+    if (!isset($_SESSION['sticker'])) {
+        header('Location: index.php');
+        exit(); // Always exit after a redirect to stop further execution
+    }
+
+    if (isset($_POST['btnContinue'])) {
+        header('Location: index.php');
+        exit;
+    }
+
+    if (isset($_POST['btnCheckout'])) {
+        header('Location: clear.php');
+        exit;
+    }
+
+    // Get the sticker data from the session
+    $sticker = $_SESSION['sticker'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -109,7 +133,7 @@
                     <div class="row">
                         <div class="col-4">
                             <form method="post">
-                                <button type="submit" class="btn btn-block btn-danger" name="btnContinueShopping">
+                                <button type="submit" class="btn btn-block btn-danger" name="btnContinue">
                                     <i class="fa fa-shopping-bag mx-2"></i> Continue Shopping
                                 </button>
                             </form>
