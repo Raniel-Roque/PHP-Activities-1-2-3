@@ -2,6 +2,11 @@
     session_start();
     require 'stickerInfo.php'; // Include the array from stickerInfo.php
 
+    if (isset($_POST['btnView'])) {
+        header('Location: cart.php');
+        exit;
+    }
+
     if (isset($_POST['btnCart'])) {
         if (isset($_POST['sticker_key'])) {
             $sticker_key = $_POST['sticker_key']; // Get the sticker key from the POST data
@@ -35,9 +40,11 @@
             <h3 class="h3" style="font-size: 35px;">
                 <i class="fa fa-store mx-2" aria-hidden="true"></i> Hoyo Sticker Online Store
             </h3>
-            <button type="button" class="btn btn-primary">
-                <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
-            </button>
+            <form method="post">
+                <button type="submit" name="btnView" class="btn btn-primary">
+                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
+                </button>
+            </form>
         </div>
         <hr>
         <div class="row g-3">
