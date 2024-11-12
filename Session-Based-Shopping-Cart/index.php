@@ -46,10 +46,13 @@
                     <div class="card">
                         <div class="product-grid2">
                             <div class="product-image2">
-                                <a href="#">
-                                    <img class="pic-1" src="img/<?php echo $sticker['photo1']; ?>">
-                                    <img class="pic-2" src="img/<?php echo $sticker['photo2']; ?>">
-                                </a>
+                                <form method="POST">
+                                    <input type="hidden" name="sticker_key" value="<?php echo $key; ?>">
+                                    <button type="submit" name="btnCart" style="background: none; border: none; padding: 0;">
+                                        <img class="pic-1" src="img/<?php echo $sticker['photo1']; ?>">
+                                        <img class="pic-2" src="img/<?php echo $sticker['photo2']; ?>">
+                                    </button>
+                                </form>
                                 <!-- Wrap Add to Cart in a form to submit the sticker key -->
                                 <form method="POST">
                                     <input type="hidden" name="sticker_key" value="<?php echo $key; ?>">
@@ -60,7 +63,7 @@
                             </div>
                             <div class="card-body product-content">
                                 <h3 class="title">
-                                    <a href="#"><?php echo $sticker['name']; ?></a>
+                                    <?php echo $sticker['name']; ?>
                                     <span class="badge badge-dark" style="padding: 10px; color: white;">
                                         ₱<?php echo number_format($sticker['price'], 2); ?>
                                     </span>
