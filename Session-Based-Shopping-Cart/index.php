@@ -49,8 +49,8 @@ if (isset($_POST['btnCart'])) {
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
                     <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
-                    <span class="badge badge-light"><?php echo count($_SESSION['cart']); ?></span>
-                </button>
+                    <span class="badge badge-light"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>
+                    </button>
             </form>
         </div>
         <hr>

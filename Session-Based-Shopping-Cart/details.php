@@ -70,8 +70,8 @@ if (isset($_POST['btnAddToCart'])) {
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
                     <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
-                    <span class="badge badge-light"><?php echo count($_SESSION['cart']); ?></span>
-                </button>
+                    <span class="badge badge-light"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>
+                    </button>
             </form>
         </div>
         <hr>
@@ -135,7 +135,7 @@ if (isset($_POST['btnAddToCart'])) {
                     </button>
 
                     <!-- Back to Store Button -->
-                    <a href="index.php" class="btn btn-danger">
+                    <a href="confirm.php" class="btn btn-danger">
                         <i class="fa fa-shopping-bag mx-2"></i> Continue Shopping
                     </a>
                 </form>

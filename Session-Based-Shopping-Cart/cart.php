@@ -1,82 +1,77 @@
 <?php
-session_start();
-require 'stickerInfo.php'; // Include the sticker array
+    session_start();
 
-// Check if the cart is empty
-if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
-    header('Location: index.php');
-    exit(); // Always exit after a redirect to stop further execution
-}
+    // If the cart is empty, redirect to the homepage
+    if (!isset($_SESSION['cart']) || empty($_SESSION['cart'])) {
+        header('Location: index.php');
+        exit();
+    }
 
-// Handle cart updates
-if (isset($_POST['btnUpdateCart'])) {
-    // Loop through each cart item and update its quantity based on the POST data
-    foreach ($_SESSION['cart'] as &$item) {
-        if (isset($_POST['quantity'][$item['key']])) { // Use 'key' instead of 'id'
-            // Sanitize and validate quantity (ensure it's a positive integer)
-            $newQuantity = filter_var($_POST['quantity'][$item['key']], FILTER_SANITIZE_NUMBER_INT);
-            $newQuantity = (int)$newQuantity; // Convert to integer to make sure it's a valid number
+    if (isset($_POST['btnCheckout'])) {
+        header("Location: clear.php");
+        exit;
+    }
 
-            // Validate that the quantity is a positive number (greater than 0)
-            if ($newQuantity > 0) {
-                $item['quantity'] = $newQuantity;
-                $item['total'] = $item['quantity'] * $item['price']; // Recalculate total
-            } else {
-                // Set to default value if invalid
-                $item['quantity'] = 1;
-                $item['total'] = $item['quantity'] * $item['price']; // Recalculate total
+    // Handle cart updates
+    if (isset($_POST['btnUpdateCart'])) {
+        // Loop through each cart item and update its quantity based on the POST data
+        foreach ($_SESSION['cart'] as &$item) {
+            if (isset($_POST['quantity'][$item['key']])) { // Use 'key' instead of 'id'
+                // Sanitize and validate quantity (ensure it's a positive integer)
+                $newQuantity = filter_var($_POST['quantity'][$item['key']], FILTER_SANITIZE_NUMBER_INT);
+                $newQuantity = (int)$newQuantity; // Convert to integer to make sure it's a valid number
+
+                // Validate that the quantity is a positive number (greater than 0)
+                if ($newQuantity > 0) {
+                    $item['quantity'] = $newQuantity;
+                    $item['total'] = $item['quantity'] * $item['price']; // Recalculate total
+                } else {
+                    // Set to default value if invalid
+                    $item['quantity'] = 1;
+                    $item['total'] = $item['quantity'] * $item['price']; // Recalculate total
+                }
             }
         }
+
+        // Redirect to refresh the page with updated cart values
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
     }
-    // Redirect to refresh the page with updated cart values
-    header('Location: ' . htmlspecialchars($_SERVER['PHP_SELF']));
-    exit;
-}
 
-if (isset($_POST['btnContinue'])) {
-    header('Location: index.php');
-    exit;
-}
+    // Handle cart item deletion (by stickerKey)
+    if (isset($_POST['btnDelete'])) {
+        $stickerKeyToDelete = $_POST['stickerKey']; // Get stickerKey to delete
+        $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($stickerKeyToDelete) {
+            return $item['key'] !== $stickerKeyToDelete; // Remove item based on stickerKey
+        });
+        $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindex the array
+        header('Location: ' . $_SERVER['PHP_SELF']);
+        exit;
+    }
 
-if (isset($_POST['btnCheckout'])) {
-    header('Location: clear.php');
-    exit;
-}
+    // Retrieve the cart from the session
+    $cart = $_SESSION['cart'];
 
-// Handle cart item deletion (by stickerKey)
-if (isset($_POST['btnDelete'])) {
-    $stickerKeyToDelete = $_POST['stickerKey']; // Get stickerKey to delete
-    $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($stickerKeyToDelete) {
-        return $item['key'] !== $stickerKeyToDelete; // Remove item based on stickerKey
-    });
-    $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindex the array
-    header('Location: ' . htmlspecialchars($_SERVER['PHP_SELF']));
-    exit;
-}
+    // Step 1: Merge identical items in the cart
+    $mergedCart = [];
+    foreach ($cart as $item) {
+        $found = false;
+        // Look for an existing item with the same name and size
+        foreach ($mergedCart as &$mergedItem) {
+            if ($mergedItem['key'] === $item['key'] && $mergedItem['size'] === $item['size']) {
+                // Merge quantities
+                $mergedItem['quantity'] += $item['quantity'];
+                $mergedItem['total'] = $mergedItem['quantity'] * $mergedItem['price']; // Recalculate total
+                $found = true;
+                break;
+            }
+        }
 
-// Retrieve the cart from the session
-$cart = $_SESSION['cart'];
-
-// Step 1: Merge identical items in the cart
-$mergedCart = [];
-foreach ($cart as $item) {
-    $found = false;
-    // Look for an existing item with the same name and size
-    foreach ($mergedCart as &$mergedItem) {
-        if ($mergedItem['name'] === $item['name'] && $mergedItem['size'] === $item['size']) {
-            // Merge quantities
-            $mergedItem['quantity'] += $item['quantity'];
-            $mergedItem['total'] = $mergedItem['quantity'] * $mergedItem['price']; // Recalculate total
-            $found = true;
-            break;
+        // If the item wasn't found, add it to the merged cart
+        if (!$found) {
+            $mergedCart[] = $item;
         }
     }
-
-    // If the item wasn't found, add it to the merged cart
-    if (!$found) {
-        $mergedCart[] = $item;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -126,7 +121,7 @@ foreach ($cart as $item) {
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th scope="col-1"></th>
+                                        <th scope="col-1">Image</th>
                                         <th scope="col-2">Product Name</th>
                                         <th scope="col-2">Size</th>
                                         <th scope="col-2" class="text-center">Quantity</th>

@@ -2,13 +2,8 @@
     session_start();
     require 'stickerInfo.php'; // Include the sticker array
 
-    // Check if the sticker data is available in the session
-    if (!isset($_SESSION['sticker'])) {
-        header('Location: index.php');
-        exit(); // Always exit after a redirect to stop further execution
-    }
-
     if (isset($_POST['btnContinue'])) {
+        session_destroy();
         header('Location: index.php');
         exit;
     }
