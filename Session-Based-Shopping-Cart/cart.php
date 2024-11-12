@@ -18,6 +18,11 @@
         exit;
     }
 
+    if (isset($_POST['btnDelete'])) {
+        header('Location: remove-confirm.php');
+        exit;
+    }
+
     // Get the sticker data from the session
     $sticker = $_SESSION['sticker'];
 ?>
@@ -78,7 +83,7 @@
                                     <td class="text-center">₱ 24.90</td>
                                     <td>
                                         <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDeleteDada">
+                                            <button type="submit" class="btn btn-danger" name="btnDelete">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -94,7 +99,7 @@
                                     <td class="text-center">₱ 33.90</td>
                                     <td>
                                         <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDeleteToto">
+                                            <button type="submit" class="btn btn-danger" name="btnDelete">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
@@ -110,7 +115,7 @@
                                     <td class="text-center">₱ 70.00</td>
                                     <td>
                                         <form method="post">
-                                            <button type="submit" class="btn btn-danger" name="btnDeleteTiti">
+                                            <button type="submit" class="btn btn-danger" name="btnDelete">
                                                 <i class="fa fa-trash"></i>
                                             </button>
                                         </form>
