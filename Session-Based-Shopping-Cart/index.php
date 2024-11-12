@@ -1,28 +1,33 @@
 <?php
-    session_start();
-    require 'stickerInfo.php'; // Include the array from stickerInfo.php
+session_start();
+require 'stickerInfo.php'; // Ensure that this file is correctly including the sticker array
 
-    if (isset($_POST['btnView'])) {
-        header('Location: cart.php');
-        exit;
-    }
+// Handle the cart view button click
+if (isset($_POST['btnView'])) {
+    header('Location: cart.php');
+    exit;
+}
 
-    if (isset($_POST['btnCart'])) {
-        if (isset($_POST['sticker_key'])) {
-            $sticker_key = $_POST['sticker_key']; // Get the sticker key from the POST data
-            
-            // Make sure the key exists in the array before accessing it
-            if (isset($arrStickers[$sticker_key])) {
-                $_SESSION['sticker'] = $arrStickers[$sticker_key]; // Store the selected sticker in the session
-                header('Location: details.php');
-                exit(); // Always exit after a redirect to stop further script execution
-            }
+// Handle the add to cart or view more details button
+if (isset($_POST['btnCart'])) {
+    if (isset($_POST['sticker_key'])) {
+        $sticker_key = $_POST['sticker_key']; // Get the sticker key from the POST data
+
+        // Ensure the sticker exists in the array before processing
+        if (isset($arrStickers[$sticker_key])) {
+            $_SESSION['sticker'] = $arrStickers[$sticker_key]; // Store the selected sticker in the session
+            header('Location: details.php'); // Redirect to the details page
+            exit(); // Always exit after redirect to prevent further script execution
+        } else {
+            echo "Invalid sticker key.";
         }
     }
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,8 +36,9 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/custom-index.css">
-    <title>Shopping_cart</title>
+    <title>Shopping Cart</title>
 </head>
+
 <body>
     <br>
     <div class="container">
@@ -42,7 +48,8 @@
             </h3>
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
-                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
+                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
+                    <span class="badge badge-light"><?php echo count($_SESSION['cart']); ?></span>
                 </button>
             </form>
         </div>
@@ -60,7 +67,7 @@
                                         <img class="pic-2" src="img/<?php echo $sticker['photo2']; ?>">
                                     </button>
                                 </form>
-                                <!-- Wrap Add to Cart in a form to submit the sticker key -->
+                                <!-- Add to Cart button -->
                                 <form method="POST">
                                     <input type="hidden" name="sticker_key" value="<?php echo $key; ?>">
                                     <button type="submit" name="btnCart" class="add-to-cart">
@@ -84,4 +91,5 @@
     </div>
     <hr>
 </body>
+
 </html>

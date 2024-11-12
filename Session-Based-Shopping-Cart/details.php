@@ -1,61 +1,49 @@
 <?php
 session_start();
-require 'stickerInfo.php'; // Include the sticker array
 
-// Check if the sticker data is available in the session
+// Ensure the sticker is stored in the session
 if (!isset($_SESSION['sticker'])) {
     header('Location: index.php');
-    exit(); // Always exit after a redirect to stop further execution
+    exit(); // Redirect back to the main store if no sticker is selected
 }
 
-// Initialize the shopping cart session if not set
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-}
+$sticker = $_SESSION['sticker']; // Get the sticker from the session
 
-// Handle button clicks
-if (isset($_POST['btnBack'])) {
-    header('Location: index.php');
-    exit;
-}
-
-if (isset($_POST['btnConfirm'])) {
-    // Capture the selected size and quantity, sanitize input
+// Handle the add to cart functionality
+if (isset($_POST['btnAddToCart'])) {
+    // Capture selected size and quantity, sanitize input
     $selectedSize = filter_input(INPUT_POST, 'sizeOptions', FILTER_SANITIZE_STRING);
     $quantity = filter_input(INPUT_POST, 'quantity', FILTER_VALIDATE_INT);
 
+    // Ensure valid quantity (1-100)
     if ($quantity === false || $quantity < 1 || $quantity > 100) {
         $quantity = 1; // Default to 1 if invalid quantity
     }
 
-    // Get the selected sticker
-    $sticker = $_SESSION['sticker'];
-
-    // Store the cart item (sanitize the sticker name, price, etc.)
+    // Create the cart item with a unique key (the sticker key)
     $cartItem = array(
+        'key' => $sticker['key'],  // Use the sticker key as the unique identifier
         'name' => htmlspecialchars($sticker['name']),
         'price' => (float)$sticker['price'], // Ensure price is numeric
         'size' => $selectedSize,
         'quantity' => $quantity,
         'total' => $quantity * (float)$sticker['price'],
-        'photo' => $sticker['photo1'] // You can add both photo1 and photo2 if needed
+        'photo' => $sticker['photo1'] // Use photo1 (can include photo2 if needed)
     );
 
-    // Add item to cart session
+    // Initialize the cart session if not set
+    if (!isset($_SESSION['cart'])) {
+        $_SESSION['cart'] = array();
+    }
+
+    // Add the item to the cart session
     $_SESSION['cart'][] = $cartItem;
 
-    // Redirect to the cart page after confirming the item
+    // Redirect to the cart page after adding to the cart
     header('Location: index.php');
-    exit;
+    exit();
 }
 
-if (isset($_POST['btnView'])) {
-    header('Location: cart.php');
-    exit;
-}
-
-// Get the sticker data from the session
-$sticker = $_SESSION['sticker'];
 ?>
 
 <!DOCTYPE html>
@@ -69,7 +57,7 @@ $sticker = $_SESSION['sticker'];
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/custom-index.css">
-    <title>Shopping_cart</title>
+    <title>Sticker Details</title>
 </head>
 
 <body>
@@ -82,11 +70,10 @@ $sticker = $_SESSION['sticker'];
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
                     <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
-                    <span class="badge badge-light"><?php echo count($_SESSION['cart']); ?></span> <!-- Show cart count -->
+                    <span class="badge badge-light"><?php echo count($_SESSION['cart']); ?></span>
                 </button>
             </form>
         </div>
-
         <hr>
 
         <!-- Row with Image and Product Details Side by Side -->
@@ -95,7 +82,6 @@ $sticker = $_SESSION['sticker'];
             <div class="col-4">
                 <div class="product-image3">
                     <a href="#">
-                        <!-- Use the sticker data for the images -->
                         <img class="pic-1" src="img/<?php echo htmlspecialchars($sticker['photo1']); ?>" alt="Product Image 1">
                         <img class="pic-2" src="img/<?php echo htmlspecialchars($sticker['photo2']); ?>" alt="Product Image 2">
                     </a>
@@ -104,12 +90,12 @@ $sticker = $_SESSION['sticker'];
 
             <!-- Column for Title, Description, and Size Options -->
             <div class="col-8">
-                <!-- Use the sticker data for the title and price -->
+                <!-- Product Name and Price -->
                 <h2><?php echo htmlspecialchars($sticker['name']); ?></h2>
                 <h4>P <?php echo number_format($sticker['price'], 2); ?></h4>
-                <!-- Use the sticker description -->
                 <p style="font-size: 14px"><?php echo htmlspecialchars($sticker['description']); ?></p>
                 <hr>
+
                 <!-- Radio Buttons for Size Selection -->
                 <form method="post">
                     <h4><label class="form-label">Select Size:</label></h4>
@@ -137,20 +123,21 @@ $sticker = $_SESSION['sticker'];
                     </div>
 
                     <hr>
+
+                    <!-- Quantity Input -->
                     <h4><label class="form-label">Enter Quantity:</label></h4>
                     <input class="form-control w-100" type="number" name="quantity" min="1" max="100" value="1">
                     <br>
-                    <div class="d-flex g-4">
-                        <!-- Confirm Product Purchase Button -->
-                        <button type="submit" class="btn btn-dark text-white" name="btnConfirm" style="margin-right: 10px;">
-                            <i class="fa fa-check"></i> Confirm Product Purchase
-                        </button>
 
-                        <!-- Cancel/Go Back Button -->
-                        <button type="submit" class="btn btn-danger" name="btnBack">
-                            Cancel / Go Back
-                        </button>
-                    </div>
+                    <!-- Add to Cart Button -->
+                    <button type="submit" name="btnAddToCart" class="btn btn-dark text-white" style="margin-right: 10px;">
+                        <i class="fa fa-shopping-cart"></i> Add to Cart
+                    </button>
+
+                    <!-- Back to Store Button -->
+                    <a href="index.php" class="btn btn-danger">
+                        <i class="fa fa-shopping-bag mx-2"></i> Continue Shopping
+                    </a>
                 </form>
             </div>
         </div>
