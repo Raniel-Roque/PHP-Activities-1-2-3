@@ -31,11 +31,6 @@
             <h3 class="h3" style="font-size: 35px;">
                 <i class="fa fa-store mx-2" aria-hidden="true"></i> Hoyo Sticker Online Store
             </h3>
-            <form method="post">
-                <button type="submit" name="btnView" class="btn btn-primary">
-                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
-                </button>
-            </form>
         </div>
         <hr>
         <h3>Online Shopping is Successful</h3>
