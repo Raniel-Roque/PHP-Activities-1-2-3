@@ -1,30 +1,52 @@
 <?php
-    session_start();
-    require 'stickerInfo.php'; // Include the sticker array
+session_start();
+require 'stickerInfo.php'; // Include the sticker array
 
-    // Check if the sticker data is available in the session
-    if (!isset($_SESSION['sticker'])) {
-        header('Location: index.php');
-        exit(); // Always exit after a redirect to stop further execution
-    }
+// Check if the cart is set
+if (!isset($_SESSION['cart'])) {
+    header('Location: index.php'); // Redirect if no cart data exists
+    exit();
+}
 
-    if (isset($_POST['btnCancel'])) {
-        header('Location: cart.php');
-        exit;
-    }
-    
-    if (isset($_POST['btnConfirm'])) {
-        header('Location: cart.php');
-        exit;
-    }
+// Ensure that the stickerKey exists in the session to identify which item to remove
+if (!isset($_POST['stickerKey'])) {
+    header('Location: cart.php'); // Redirect if no stickerKey is provided
+    exit();
+}
 
-    if (isset($_POST['btnView'])) {
-        header('Location: cart.php');
-        exit;
-    }
+// Get the sticker data from the session based on the stickerKey
+$stickerKey = $_POST['stickerKey'];
 
-    // Get the sticker data from the session
-    $sticker = $_SESSION['sticker'];
+// Find the sticker item in the cart
+$sticker = null;
+foreach ($_SESSION['cart'] as $item) {
+    if ($item['key'] === $stickerKey) {
+        $sticker = $item;
+        break; // Found the item, no need to continue looping
+    }
+}
+
+// If no matching sticker is found, redirect to cart
+if ($sticker === null) {
+    header('Location: cart.php');
+    exit();
+}
+
+// Handle button actions (Confirm removal or cancel)
+if (isset($_POST['btnCancel'])) {
+    header('Location: cart.php'); // Redirect back to the cart page without making changes
+    exit();
+}
+
+if (isset($_POST['btnConfirm'])) {
+    // Remove the sticker item from the cart
+    $_SESSION['cart'] = array_filter($_SESSION['cart'], function($item) use ($stickerKey) {
+        return $item['key'] !== $stickerKey; // Remove the item by matching the key
+    });
+    $_SESSION['cart'] = array_values($_SESSION['cart']); // Reindex the array to ensure it remains sequential
+    header('Location: cart.php'); // Redirect back to the cart page after removal
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -32,12 +54,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="css/custom-index.css">
-    <title>Shopping_cart</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/custom-index.css">
+    <title>Confirm Product Removal</title>
 </head>
 <body>
     <br>
@@ -48,7 +70,8 @@
             </h3>
             <form method="post">
                 <button type="submit" name="btnView" class="btn btn-primary">
-                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;<span class="badge badge-light">4</span>
+                    <i class="fa fa-shopping-cart mx-2" aria-hidden="true"></i><strong>Cart</strong> &nbsp;&nbsp;
+                    <span class="badge badge-light"><?php echo isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0; ?></span>
                 </button>
             </form>
         </div>
@@ -73,19 +96,19 @@
                 <!-- Use the sticker data for the title and price -->
                 <h2><?php echo htmlspecialchars($sticker['name']); ?></h2>
                 <h4>P <?php echo number_format($sticker['price'], 2); ?></h4>
-                <!-- Use the sticker description -->
                 <p style="font-size: 14px"><?php echo htmlspecialchars($sticker['description']); ?></p>
                 <hr>
-                <!-- Radio Buttons for Size Selection -->
-                <form method="post">
-                    <h4><label class="form-label">Size: XL</label></h4>
 
-                    <hr>
-                    <h4><label class="form-label">Quantity: 4</label></h4>
-                    <br>
+                <!-- Display the size and quantity -->
+                <h4><label class="form-label">Size: <?php echo htmlspecialchars($sticker['size']); ?></label></h4>
+                <h4><label class="form-label">Quantity: <?php echo $sticker['quantity']; ?></label></h4>
+                <hr>
+
+                <!-- Form for confirming or canceling the removal -->
+                <form method="post">
                     <div class="d-flex g-4">
-                        <!-- Confirm Product Purchase Button -->
-                        <button type="submit" class="btn btn-dark text-white" name="btnConfirm" style="margin-right: 10px;"> <!-- Increased margin on the end of the button -->
+                        <!-- Confirm Product Removal Button -->
+                        <button type="submit" class="btn btn-dark text-white" name="btnConfirm" style="margin-right: 10px;">
                             <i class="fa fa-trash"></i> Confirm Product Removal
                         </button>
 
@@ -94,6 +117,9 @@
                             Cancel / Go Back
                         </button>
                     </div>
+
+                    <!-- Hidden Input to Pass Product Key -->
+                    <input type="hidden" name="stickerKey" value="<?php echo $sticker['key']; ?>">
                 </form>
             </div>
         </div>

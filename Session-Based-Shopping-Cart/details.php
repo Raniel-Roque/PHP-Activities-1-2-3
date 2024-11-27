@@ -40,7 +40,7 @@ if (isset($_POST['btnAddToCart'])) {
     $_SESSION['cart'][] = $cartItem;
 
     // Redirect to the cart page after adding to the cart
-    header('Location: index.php');
+    header('Location: confirm.php');
     exit();
 }
 
@@ -135,7 +135,7 @@ if (isset($_POST['btnAddToCart'])) {
                     </button>
 
                     <!-- Back to Store Button -->
-                    <a href="confirm.php" class="btn btn-danger">
+                    <a href="index.php" class="btn btn-danger">
                         <i class="fa fa-shopping-bag mx-2"></i> Continue Shopping
                     </a>
                 </form>
